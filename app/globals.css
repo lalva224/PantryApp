@@ -1,0 +1,15 @@
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities; */
+
+
+*{
+  /*This is so that boxes (for any element) are the actual size of the whole container and not exlcuding padding and border*/
+  box-sizing: border-box;
+  padding:0;
+  margin: 0;
+  }
+
+
+
+
