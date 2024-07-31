@@ -3,7 +3,7 @@ import Image from "next/image";
 import { ingredients } from "./ingredients";
 import { Box, Container, IconButton, Paper, Stack, TextField, Typography } from "@mui/material";
 import {db} from '@/firebase'
-import { addDoc, collection, deleteDoc, doc, getDoc, getDocs } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, query,where } from "firebase/firestore";
 import { useState,useEffect } from "react";
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
@@ -27,7 +27,7 @@ export default function Home() {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [items,setItems] = useState('')
-    
+  const [quantity,setQuantity] = useState(0)
   const getPantry = async()=>{
     try{
       const pantryCollection = collection(db,'pantry')
@@ -36,7 +36,8 @@ export default function Home() {
       //however, with map u can only iterate through an array which u need map for
       const pantryItems = pantryDocs.docs.map(doc=>({
         id: doc.id,
-        data: doc.data()['Item']
+        Item: doc.data()['Item'],
+        Quantity: doc.data()['Quantity']
       }
       ))
       setPantry(pantryItems)
@@ -48,10 +49,19 @@ export default function Home() {
 
   }
     const addItem = async()=>{
+      
+      const q = query(collection(db, 'pantry'), where('Item', '==', items));
+      const querySnap = await getDocs(q)
+      if(querySnap.empty){
       await addDoc(collection(db,'pantry'),{
-        'Item':items
+        'Item':items,
+        'Quantity':quantity
       })
       await getPantry()
+    }
+    else{
+      console.log('Already in DB')
+    }
     }
   
      const removeItem = async(itemId)=>{
@@ -88,8 +98,10 @@ export default function Home() {
         </Typography>
         <Stack direction={'row'} spacing={2}> 
           <TextField label='item' onChange={(e)=>setItems(e.target.value)}/>
+            <TextField label='#' type="number" sx={{width:'5rem'}} onChange={(e)=>setQuantity(e.target.value)}/>
           <Button variant = {'outlined'} onClick={()=>{
             addItem(items)
+            setQuantity('')
             setItems('')
             handleClose()
           }}
@@ -135,13 +147,22 @@ export default function Home() {
           
           >
             <Stack direction={'row'}
-            spacing={40}
-            
+            // justifyContent={'space-evenly'}
+            sx={{
+              position: 'relative'
+            }}
             >
             <IconButton onClick={()=>{
              
               removeItem(ingredient['id'])
             }}
+            sx={{
+              position:'absolute',
+              left:100,
+              top:30
+
+            }}
+            
               >
             <RemoveIcon/>
             </IconButton>
@@ -150,16 +171,39 @@ export default function Home() {
             <Typography
             variant="h4"
             fontWeight={'bold'}
-            alignItems={'center'}
-            justifyContent={'center'}
-            textAlign={'center'}
+            sx={{
+              position:'absolute',
+              left:300,
+              top:30
+            }}
             >
               {
-                ingredient['data'].charAt(0).toUpperCase() + ingredient['data'].slice(1)
+                ingredient['Item'].charAt(0).toUpperCase() + ingredient['Item'].slice(1)
               }
             </Typography>
-
+            
+            <Typography variant="h5"
+            sx={{
+              position:'absolute',
+              left:600,
+              top:40
+            }}
+            >
+               {
+                ingredient['Quantity']
+               }
+            </Typography>
+            <Button variant="contained" 
+            sx={{
+              position:'absolute',
+              left:700,
+              top:40,
+              bgcolor: 'primary.light'
+            }}
+            >Edit</Button>
             </Stack>
+
+            
           </Box>
           
 
