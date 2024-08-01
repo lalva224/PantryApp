@@ -5,15 +5,16 @@ import { getFirestore } from "firebase/firestore";
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyChbmmJrNs4jXTJ1X0aN1lMcnVJCBGHHoo",
-  authDomain: "pantryproject-82ec1.firebaseapp.com",
-  projectId: "pantryproject-82ec1",
-  storageBucket: "pantryproject-82ec1.appspot.com",
-  messagingSenderId: "259971524080",
-  appId: "1:259971524080:web:708c43c38598e6986a6935"
-};
 
+const firebaseConfig = {
+  apiKey: "AIzaSyAutn02Vp7w8wmho-ewgbxqLrHH6_6OHsU",
+  authDomain: "pantryproject-99c78.firebaseapp.com",
+  projectId: "pantryproject-99c78",
+  storageBucket: "pantryproject-99c78.appspot.com",
+  messagingSenderId: "140145649100",
+  appId: "1:140145649100:web:fab2d5c858f88999cfa969",
+  measurementId: "G-ETRDX3LCLG"
+};
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app)

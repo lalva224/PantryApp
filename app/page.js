@@ -1,31 +1,19 @@
 "use client"
 import Image from "next/image";
 import { ingredients } from "./ingredients";
-import { Box, Container, IconButton, Paper, Stack, TextField, Typography } from "@mui/material";
+import { Box, Container, Grid, IconButton, Paper, Stack, TextField, Typography } from "@mui/material";
 import {db} from '@/firebase'
-import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, query,where } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, query,setDoc,updateDoc,where } from "firebase/firestore";
 import { useState,useEffect } from "react";
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import { RemoveIcon } from "./icons/RemoveIcon";
+import { AddModal, EditModal } from "./Modals/Modal";
 // import { getPantry,addItem,removeItem } from "./actions/serverActions";
-const modalStyle = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
-};
+
 
 export default function Home() {
   const [pantry,setPantry] = useState([])
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
   const [items,setItems] = useState('')
   const [quantity,setQuantity] = useState(0)
   const getPantry = async()=>{
@@ -36,8 +24,8 @@ export default function Home() {
       //however, with map u can only iterate through an array which u need map for
       const pantryItems = pantryDocs.docs.map(doc=>({
         id: doc.id,
-        Item: doc.data()['Item'],
-        Quantity: doc.data()['Quantity']
+        item: doc.data()['item'],
+        quantity: doc.data()['quantity']
       }
       ))
       setPantry(pantryItems)
@@ -54,8 +42,8 @@ export default function Home() {
       const querySnap = await getDocs(q)
       if(querySnap.empty){
       await addDoc(collection(db,'pantry'),{
-        'Item':items,
-        'Quantity':quantity
+        'item':items,
+        'quantity':quantity
       })
       await getPantry()
     }
@@ -70,6 +58,21 @@ export default function Home() {
       await deleteDoc(ref)
       await getPantry()
     }
+
+    const updateItem = async (quantity,item,itemId)=>{
+      console.log(quantity,item,itemId)
+      if(quantity==0){
+        await removeItem(itemId)
+      }
+      else{
+      const ref = doc(db,'pantry',itemId)
+      await updateDoc(ref,{
+        quantity:quantity
+      })
+      await getPantry()
+    }
+    }
+    
   //render pantry upon initial render, no items dependency because items is updated after every single key stroke
   useEffect(()=>{
 
@@ -85,30 +88,10 @@ export default function Home() {
             textAlign:'center'
           }}
       >
-     <Button  variant ={'contained'}onClick={handleOpen} sx={{mt:'3rem'}}>Add</Button>
-    <Modal
-      open={open}
-      onClose={handleClose}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
-    >
-      <Box sx={modalStyle}>
-        <Typography id="modal-modal-title" variant="h6" component="h2" sx={{mb:'1rem'}}>
-          Add
-        </Typography>
-        <Stack direction={'row'} spacing={2}> 
-          <TextField label='item' onChange={(e)=>setItems(e.target.value)}/>
-            <TextField label='#' type="number" sx={{width:'5rem'}} onChange={(e)=>setQuantity(e.target.value)}/>
-          <Button variant = {'outlined'} onClick={()=>{
-            addItem(items)
-            setQuantity('')
-            setItems('')
-            handleClose()
-          }}
-          >Add</Button>
-        </Stack>
-      </Box>
-    </Modal>
+     
+     {/* /{addItem,setQuantity,setItems,handleClose} */}
+        <AddModal addItem={addItem} setQuantity={setQuantity} items={items} setItems={setItems} />
+
         
         <Box
         
@@ -116,9 +99,8 @@ export default function Home() {
         alignItems={'center'}
         justifyContent={'center'}
        flexDirection={'column'}
-       sx={{
-        mt:'10vh'
-       }}
+       sx={{ mt: '10vh' }}
+      
         >
           <Box width = '800px' height = '100px' bgcolor={'#023e8a'}>
           <Typography variant = 'h2'> Pantry Items</Typography>
@@ -146,61 +128,54 @@ export default function Home() {
           }}
           
           >
+            
             <Stack direction={'row'}
             // justifyContent={'space-evenly'}
-            sx={{
-              position: 'relative'
-            }}
-            >
-            <IconButton onClick={()=>{
-             
-              removeItem(ingredient['id'])
-            }}
-            sx={{
-              position:'absolute',
-              left:100,
-              top:30
-
-            }}
             
-              >
-            <RemoveIcon/>
-            </IconButton>
-
-
-            <Typography
-            variant="h4"
-            fontWeight={'bold'}
-            sx={{
-              position:'absolute',
-              left:300,
-              top:30
-            }}
             >
-              {
-                ingredient['Item'].charAt(0).toUpperCase() + ingredient['Item'].slice(1)
-              }
-            </Typography>
+              {/**columnSpacing={{ xs: 1, sm: 2, md: 3 }} */}
+               <Grid container spacing={2} alignItems="center" >
+      {/* Trash Icon */}
+      <Grid item>
+        <IconButton onClick={() => removeItem(ingredient['id'])}>
+          <RemoveIcon />
+        </IconButton>
+      </Grid>
+      
+      {/* Item Text */}
+      <Grid item xs>
+        <Typography variant="h4" fontWeight="bold">
+          {ingredient['item'].charAt(0).toUpperCase() + ingredient['item'].slice(1)}
+        </Typography>
+      </Grid>
+      
+      {/* Quantity */}
+      <Grid item>
+        <Typography variant="h5">
+          {ingredient['quantity']}
+        </Typography>
+      </Grid>
+      
+      {/* Edit Modal */}
+      <Grid item>
+        <EditModal
+          itemId={ingredient['id']}
+          updateItem={updateItem}
+          item={ingredient['item']}  // Fixed key 'item' instead of 'Item'
+          quantity={ingredient['quantity']}
+        />
+      </Grid>
+    </Grid>
+              
+               
             
-            <Typography variant="h5"
-            sx={{
-              position:'absolute',
-              left:600,
-              top:40
-            }}
-            >
-               {
-                ingredient['Quantity']
-               }
-            </Typography>
-            <Button variant="contained" 
-            sx={{
-              position:'absolute',
-              left:700,
-              top:40,
-              bgcolor: 'primary.light'
-            }}
-            >Edit</Button>
+
+
+            
+            
+            
+            
+            
             </Stack>
 
             
