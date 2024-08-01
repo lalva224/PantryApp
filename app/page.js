@@ -9,6 +9,8 @@ import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import { RemoveIcon } from "./icons/RemoveIcon";
 import { AddModal, EditModal } from "./Modals/Modal";
+import { StyledInputBase,Search,SearchIconWrapper } from "./searchStyles";
+import SearchIcon from '@mui/icons-material/Search';
 // import { getPantry,addItem,removeItem } from "./actions/serverActions";
 
 
@@ -16,6 +18,13 @@ export default function Home() {
   const [pantry,setPantry] = useState([])
   const [items,setItems] = useState('')
   const [quantity,setQuantity] = useState(0)
+  const [searchParam,setSearchParam] = useState('')
+
+  const filteredPantry = pantry.filter(({item})=>
+    item.toLowerCase().startsWith(searchParam.toLowerCase())
+  )
+ 
+  console.log(filteredPantry)
   const getPantry = async()=>{
     try{
       const pantryCollection = collection(db,'pantry')
@@ -72,13 +81,16 @@ export default function Home() {
       await getPantry()
     }
     }
-    
+
+  
   //render pantry upon initial render, no items dependency because items is updated after every single key stroke
   useEffect(()=>{
 
     getPantry()
     
   },[])
+
+  
   // console.log(pantry)
   return (
     <>
@@ -89,8 +101,8 @@ export default function Home() {
           }}
       >
      
-     {/* /{addItem,setQuantity,setItems,handleClose} */}
-        <AddModal addItem={addItem} setQuantity={setQuantity} items={items} setItems={setItems} />
+
+        
 
         
         <Box
@@ -99,21 +111,50 @@ export default function Home() {
         alignItems={'center'}
         justifyContent={'center'}
        flexDirection={'column'}
-       sx={{ mt: '10vh' }}
+       sx={{ mt: '10vh' ,
+        
+       }}
       
         >
-          <Box width = '800px' height = '100px' bgcolor={'#023e8a'}>
-          <Typography variant = 'h2'> Pantry Items</Typography>
+          <Box width = '100%' height = '100%' sx={{mb:'2rem'}}>
+          <Typography variant = 'h2' sx={{color:"white", fontWeight:'bold'}}> Pantry Items</Typography>
           </Box>
-        
-        
+        <Stack direction='row' spacing={2} sx={{mb:'2rem'}}>
+          <Search>
+            <SearchIconWrapper>
+              <SearchIcon />
+            </SearchIconWrapper>
+            <StyledInputBase
+              placeholder="Search…"
+              inputProps={{ 'aria-label': 'search' }}
+              onChange={(e)=>setSearchParam(e.target.value)}
+            />
+          </Search>
+          <AddModal addItem={addItem} setQuantity={setQuantity} items={items} setItems={setItems} />
+          </Stack>
         <Stack spacing = {3} 
-        width='800px'
-        height= '300px'
-        overflow={'auto'}
+        
+        sx={{
+          width:{
+            xs:400,
+            sm:400,
+            md:600,
+            lg:800,
+           
+          },
+          height:{
+            xs:400,
+            sm:400,
+           
+          
+            
+          },
+          overflow:'auto'
+        }}
+        
         
         >
-        {pantry.map((ingredient)=>(
+        {filteredPantry.map((ingredient)=>(
           
             
           <Box
@@ -129,11 +170,7 @@ export default function Home() {
           
           >
             
-            <Stack direction={'row'}
-            // justifyContent={'space-evenly'}
             
-            >
-              {/**columnSpacing={{ xs: 1, sm: 2, md: 3 }} */}
                <Grid container spacing={2} alignItems="center" >
       {/* Trash Icon */}
       <Grid item>
@@ -176,7 +213,7 @@ export default function Home() {
             
             
             
-            </Stack>
+          
 
             
           </Box>
