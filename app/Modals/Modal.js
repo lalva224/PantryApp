@@ -47,15 +47,29 @@ export const AddModal = ({addItem,setQuantity,items,setItems,quantity}) => {
           Add Items
         </Typography>
         <Stack direction={'row'} spacing={2}> 
-          <TextField label='item' onChange={(e)=>setItems(e.target.value)}/>
-            <TextField label='#' type="number" sx={{width:'5rem'}} onChange={(e)=>setQuantity(e.target.value)}/>
-          <Button variant = {'outlined'} onClick={()=>{
+          <TextField 
+          label='item' 
+          onChange={(e)=>setItems(e.target.value)}
+          error={items=='' || items.length>20}
+
+          />
+            <TextField
+             label='#'
+              type="number"
+               sx={{width:'5rem'}} 
+               onChange={(e)=>setQuantity(e.target.value)}
+
+
+              />
+          <Button variant = {'outlined'} 
+          onClick={()=>{
             addItem(items)
             //not needed
             // setQuantity('')
             // setItems('')
             handleClose()
           }}
+          disabled={items=='' || items.length>20}
           >Add</Button>
           </Stack>
         </Stack>
