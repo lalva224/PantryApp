@@ -8,13 +8,14 @@ const Home = () => {
   return (
     <>
     
-    <Container
+    <Box
    sx={{
     display:'flex',
     justifyContent:'center',
     alignItems:'center',
     flexDirection:'column',
-    margin:'2rem'
+    m:{xs:'4rem',md:'2rem'},
+    
    }}
     
     >
@@ -41,7 +42,8 @@ const Home = () => {
     sx={{
         color:'white',
         textAlign:'center',
-        fontSize:{xs:'1.5rem',md:'1.75rem',lg:'1.9rem'}
+        fontSize:{xs:'1.5rem',md:'1.75rem',lg:'1.9rem'},
+        
     }}
     >
         Easily organize your pantry inventory. Enter items manually or snap a quick picture!
@@ -68,7 +70,7 @@ const Home = () => {
                     
     
     </Box>
-    </Container>
+    </Box>
     </>
   )
 }

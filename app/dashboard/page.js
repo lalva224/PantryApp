@@ -160,7 +160,7 @@ export default function Home() {
         
         sx={{
           width:{
-            xs:300,
+            xs:400,
             sm:400,
             md:600,
             lg:800,
