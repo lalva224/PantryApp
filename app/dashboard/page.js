@@ -186,7 +186,7 @@ export default function Home() {
           elevation={3}
           sx ={{
            
-            bgcolor:'#f0f0f0',
+            background: '-webkit-linear-gradient(left,#bdc3c7,#2c3e50)',
             width:'100%',
             height:'80px',
             
