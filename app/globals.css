@@ -9,6 +9,16 @@
   padding:0;
   margin: 0;
   }
+
+ .gradient-text{
+  font-weight:'bold';
+  text-align:'center';
+  background:'-webkit-linear-gradient(left, #2980B9, #6DD5FA,#FFFFFF)';
+  -webkit-text-fill-color: 'transparent';
+  -webkit-background-clip:'text' ;
+  line-height: 1.4;
+       
+ } 
  
 
 
