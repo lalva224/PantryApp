@@ -27,8 +27,8 @@ const Home = () => {
         WebkitTextFillColor:'transparent',
         WebkitBackgroundClip:'text',
         lineHeight:1.4,
-        mt:'2rem'
-
+        mt:'2rem',
+        fontSize:{xs:'6vh',md:'10vh',lg:'15vh'}
 
 
     }}
@@ -41,7 +41,7 @@ const Home = () => {
     sx={{
         color:'white',
         textAlign:'center',
-        fontSize:'4vh'
+        fontSize:{xs:'1.5rem',md:'1.75rem',lg:'1.9rem'}
     }}
     >
         Easily organize your pantry inventory. Enter items manually or snap a quick picture!

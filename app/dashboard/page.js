@@ -185,8 +185,8 @@ export default function Home() {
           key ={ingredient['id']}
           elevation={3}
           sx ={{
-           
-            background: '-webkit-linear-gradient(left,#bdc3c7,#2c3e50)',
+            // background: '-webkit-linear-gradient(left,#8e9eab,#eef2f3)',
+            background:'e9ecef',
             width:'100%',
             height:'80px',
             

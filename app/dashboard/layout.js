@@ -16,7 +16,9 @@ export default function Layout({ children }) {
           <CssBaseline/>
           <Box
           sx={{
-             background:'-webkit-linear-gradient(left, #43C6AC, #191654)'
+            //  background:'-webkit-linear-gradient(left, #43C6AC, #191654)',
+            background:'-webkit-linear-gradient(left,#0f0c29,#302b63,#24243e)'
+
           }}
           >
         {children}
