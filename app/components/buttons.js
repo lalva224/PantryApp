@@ -1,7 +1,9 @@
 import { Home } from '@mui/icons-material'
 import React from 'react'
 import Link from '@mui/material/Link';
-import {Box,Button} from '@mui/material'
+import { Box, Container, Grid, IconButton,Button, Paper, Stack, TextField, Typography } from "@mui/material";
+import { CameraIcon } from "../icons/CameraIcon";
+
 export const HomeButton = () => {
   return (
     <Box
@@ -29,6 +31,18 @@ export const HomeButton = () => {
                 </Link>
                 </Box>
   )
+}
+
+export const CameraButton =({handleCameraClick})=>{
+    return(
+        <IconButton onClick={handleCameraClick}
+           sx={{
+            ml:'1rem'
+           }}
+           >
+            <CameraIcon/>
+          </IconButton>  
+    )
 }
 
 

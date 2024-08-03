@@ -11,7 +11,7 @@ export const StyledInputBase = styled(InputBase)(({ theme }) => ({
       paddingLeft: `calc(1em + ${theme.spacing(4)})`,
       transition: theme.transitions.create('width'),
       width: '100%',
-      [theme.breakpoints.up('md')]: {
+      [theme.breakpoints.up('lg')]: {
         width: '30ch',
         height:'3ch'
       },
@@ -52,6 +52,9 @@ export const StyledInputBase = styled(InputBase)(({ theme }) => ({
               placeholder="Search…"
               inputProps={{ 'aria-label': 'search' }}
               onChange={(e)=>setSearchParam(e.target.value)}
+              sx={{
+                width:{sm:350}
+              }}
             />
           </Search>
       </>

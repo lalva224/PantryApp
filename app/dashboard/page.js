@@ -12,9 +12,10 @@ import { AddModal, EditModal } from "../Modals/Modal";
 import Link from '@mui/material/Link';
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { imageRecognition } from "./OpenAI/actions";
-import { CameraIcon } from "../icons/CameraIcon";
 import { SearchBar } from "../components/searchStyles";
 import { HomeButton } from "../components/buttons";
+import { useMediaQuery } from '@mui/material';
+import { CameraButton } from "../components/buttons";
 const s3Client = new S3Client({
   region: 'us-east-1',
   credentials: {
@@ -26,6 +27,7 @@ const s3Client = new S3Client({
 
 
 export default function Home() {
+  const isSmall= useMediaQuery('(max-width:600px)');
   const [pantry,setPantry] = useState([])
   const [items,setItems] = useState('')
   const [quantity,setQuantity] = useState(0)
@@ -191,6 +193,9 @@ export default function Home() {
           >
               {/**used box here instead of stack because the stack makes the other elements flex grow to the size of largest element. */}
           </Box>
+          {isSmall &&
+          <CameraButton handleCameraClick={handleCameraClick}/>
+          }
            <Box
           sx={{
             display:'flex',
@@ -207,14 +212,12 @@ export default function Home() {
          <SearchBar/>
 
           <AddModal addItem={addItem} setQuantity={setQuantity} items={items} setItems={setItems} quantity={quantity} />
-         
-            {/* <IconButton onClick={handleCameraClick}
-           sx={{
-            ml:'1rem'
-           }}
-           >
-            <CameraIcon/>
-          </IconButton>   */}
+          
+          {
+            !isSmall &&
+            <CameraButton handleCameraClick={handleCameraClick}/> 
+          }
+              
           
           
           <input
@@ -228,18 +231,23 @@ export default function Home() {
             }}
           /> 
           </Box> 
+
+          {/**camera on next line if small */}
+          
            {/* </Stack>  */}
         <Stack spacing = {3} 
         
         sx={{
           width:{
-            xs:'22rem',
-            md:'30rem',
-            lg:'50rem',
+            xs:370,
+            sm:500,
+            md:600,
+            lg:800,
            
           },
           height:{
-            xs:'20rem',
+            xs:400,
+            sm:500,
            
            
           
