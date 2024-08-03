@@ -34,7 +34,7 @@ export const AddModal = ({addItem,setQuantity,items,setItems,quantity}) => {
   return (
     <>
     
-    <Button  variant ={'contained'}onClick={handleOpen} sx={{mt:'3rem'}}>Add</Button>
+    <Button  variant ={'contained'}onClick={handleOpen}>Add</Button>
     <Modal
       open={open}
       onClose={handleClose}

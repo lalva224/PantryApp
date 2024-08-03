@@ -1,4 +1,5 @@
 import { styled, alpha } from '@mui/material/styles';
+import SearchIcon from '@mui/icons-material/Search';
 import InputBase from '@mui/material/InputBase';
 
 
@@ -12,6 +13,7 @@ export const StyledInputBase = styled(InputBase)(({ theme }) => ({
       width: '100%',
       [theme.breakpoints.up('md')]: {
         width: '30ch',
+        height:'3ch'
       },
     },
   }));
@@ -38,3 +40,23 @@ export const StyledInputBase = styled(InputBase)(({ theme }) => ({
     alignItems: 'center',
     justifyContent: 'center',
   }));
+
+  export const SearchBar = ()=>{
+    return(
+      <>
+      <Search>
+            <SearchIconWrapper>
+              <SearchIcon />
+            </SearchIconWrapper>
+            <StyledInputBase
+              placeholder="Search…"
+              inputProps={{ 'aria-label': 'search' }}
+              onChange={(e)=>setSearchParam(e.target.value)}
+            />
+          </Search>
+      </>
+    )
+  }
+
+
+ 

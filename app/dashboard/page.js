@@ -4,17 +4,17 @@ import { ingredients } from "../ingredients";
 import { Box, Container, Grid, IconButton, Paper, Stack, TextField, Typography } from "@mui/material";
 import {db} from '@/firebase'
 import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, query,setDoc,updateDoc,where } from "firebase/firestore";
-import { useState,useEffect } from "react";
+import { useState,useEffect,useRef } from "react";
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import { RemoveIcon } from "../icons/RemoveIcon";
 import { AddModal, EditModal } from "../Modals/Modal";
-import { StyledInputBase,Search,SearchIconWrapper } from "../searchStyles";
-import SearchIcon from '@mui/icons-material/Search';
 import Link from '@mui/material/Link';
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { imageRecognition } from "./OpenAI/actions";
-
+import { CameraIcon } from "../icons/CameraIcon";
+import { SearchBar } from "../components/searchStyles";
+import { HomeButton } from "../components/buttons";
 const s3Client = new S3Client({
   region: 'us-east-1',
   credentials: {
@@ -31,6 +31,7 @@ export default function Home() {
   const [quantity,setQuantity] = useState(0)
   const [searchParam,setSearchParam] = useState('')
   const [imageUrl,setImageUrl] = useState('')
+
 
   const filteredPantry = pantry.filter(({item})=>
     item.toLowerCase().startsWith(searchParam.toLowerCase())
@@ -136,6 +137,13 @@ export default function Home() {
 
       
     }
+    //this ref is attached to the camera file input. Once the camera icon clicked, the input ref clicks on the input field.
+    const fileInputRef = useRef(null)
+
+    const handleCameraClick = ()=>{
+      fileInputRef.current.click()
+    }
+
 
 
   
@@ -151,36 +159,14 @@ export default function Home() {
   return (
     <>
         
-      <Container
+      <Box
           sx={{
-            textAlign:'center'
-          }}
-      >
-          <Box
-          sx={{
-            display:'flex',
-            justifyContent:'flex-end',
+            textAlign:'center',
             
           }}
+      >
           
-          >
-        <Link href='/'>
-                <Button
-            variant='contained'
-                sx={{
-                    color:'white',
-                    backgroundColor:'red',
-                    ":hover":{
-                      backgroundColor:'#6a040f'
-                    }
-                }}
-                
-            >
-                 Home
-                </Button>
-                </Link>
-                </Box>
-        
+        <HomeButton/>
         
 
         
@@ -190,47 +176,71 @@ export default function Home() {
         alignItems={'center'}
         justifyContent={'center'}
        flexDirection={'column'}
-       sx={{ mt: '10vh' ,
-        
-       }}
-      
+
         >
           <Box width = '100%' height = '100%' sx={{mb:'2rem'}}>
-          <Typography variant = 'h2' sx={{color:"white", fontWeight:'bold'}}> Pantry Items</Typography>
+          <Typography variant = 'h2' 
+          sx={{color:"white",
+             fontWeight:'bold',
+             fontSize:{xs:'2rem',lg:'3rem'},
+             mt:'1rem'
+            }}
+          > Pantry Items</Typography>
           </Box>
-        <Stack direction='row' spacing={2} sx={{mb:'2rem'}}>
-          <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search…"
-              inputProps={{ 'aria-label': 'search' }}
-              onChange={(e)=>setSearchParam(e.target.value)}
-            />
-          </Search>
-          <AddModal addItem={addItem} setQuantity={setQuantity} items={items} setItems={setItems} quantity={quantity} />
+          <Box
+          >
+              {/**used box here instead of stack because the stack makes the other elements flex grow to the size of largest element. */}
+          </Box>
+           <Box
+          sx={{
+            display:'flex',
+            flexDirection:'row',
+            justifyContent:'space-around',
+            alignItems:'center',
+            mb:'2rem'
+          }}
+          > 
 
+          
+        {/* <Stack direction='row' spacing={2} sx={{mb:'2rem'}}> */}
+
+         <SearchBar/>
+
+          <AddModal addItem={addItem} setQuantity={setQuantity} items={items} setItems={setItems} quantity={quantity} />
+         
+            {/* <IconButton onClick={handleCameraClick}
+           sx={{
+            ml:'1rem'
+           }}
+           >
+            <CameraIcon/>
+          </IconButton>   */}
+          
+          
           <input
             type ='file'
+            ref={fileInputRef}
             accept="image/*"
             capture='environment'
             onChange={uploadFile}
-          />
-          </Stack>
+            style={{
+              display:'none'
+            }}
+          /> 
+          </Box> 
+           {/* </Stack>  */}
         <Stack spacing = {3} 
         
         sx={{
           width:{
-            xs:400,
-            sm:400,
-            md:600,
-            lg:800,
+            xs:'22rem',
+            md:'30rem',
+            lg:'50rem',
            
           },
           height:{
-            xs:400,
-            sm:400,
+            xs:'20rem',
+           
            
           
             
@@ -313,7 +323,7 @@ export default function Home() {
         ))}
         </Stack>
         </Box>
-      </Container>
+      </Box>
     </>
   );
 }

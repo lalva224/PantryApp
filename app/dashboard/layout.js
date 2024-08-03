@@ -1,14 +1,15 @@
 import { Inter } from "next/font/google";
 import "../globals.css";
 import { dashboardTheme } from "../GetTheme";
-import { Box, ThemeProvider } from "@mui/material";
+import { ThemeProvider ,Box} from "@mui/material";
 import { CssBaseline } from '@mui/material/';
 const inter = Inter({ subsets: ["latin"] });
 
 
 
-
-export default function Layout({ children }) {
+//css modules??
+export default function Layout({ children }){
+    
   return (
     
     
@@ -16,9 +17,8 @@ export default function Layout({ children }) {
           <CssBaseline/>
           <Box
           sx={{
-            //  background:'-webkit-linear-gradient(left, #43C6AC, #191654)',
-            background:'-webkit-linear-gradient(left,#0f0c29,#302b63,#24243e)'
-
+             background:'-webkit-linear-gradient(left,#0f0c29,#302b63,#24243e)',
+             height:'100vh'
           }}
           >
         {children}
