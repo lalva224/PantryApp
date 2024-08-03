@@ -63,7 +63,7 @@ export const AddModal = ({addItem,setQuantity,items,setItems,quantity}) => {
               />
           <Button variant = {'outlined'} 
           onClick={()=>{
-            addItem(items)
+            addItem(items,quantity)
             //not needed
             // setQuantity('')
             // setItems('')
