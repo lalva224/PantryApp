@@ -209,7 +209,7 @@ export default function Home() {
           
         {/* <Stack direction='row' spacing={2} sx={{mb:'2rem'}}> */}
 
-         <SearchBar/>
+         <SearchBar setSearchParam={setSearchParam} />
 
           <AddModal addItem={addItem} setQuantity={setQuantity} items={items} setItems={setItems} quantity={quantity} />
           
@@ -242,12 +242,14 @@ export default function Home() {
             xs:370,
             sm:500,
             md:600,
-            lg:800,
+            lg:600,
            
           },
           height:{
             xs:400,
             sm:500,
+            lg:350
+            
            
            
           

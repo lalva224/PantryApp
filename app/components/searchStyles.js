@@ -41,7 +41,7 @@ export const StyledInputBase = styled(InputBase)(({ theme }) => ({
     justifyContent: 'center',
   }));
 
-  export const SearchBar = ()=>{
+  export const SearchBar = ({setSearchParam})=>{
     return(
       <>
       <Search>
