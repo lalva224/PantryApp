@@ -19,7 +19,7 @@ import { CameraButton } from "../components/buttons";
 import { MobileCamera } from "../components/MobileCamera";
 import {Camera} from "react-camera-pro";
 import { CldImage } from 'next-cloudinary';
-import { ByteUpload } from "./ServerActions/ByteScale";
+
 import * as Bytescale from "@bytescale/sdk";
 
 const uploadManager = new Bytescale.UploadManager({
