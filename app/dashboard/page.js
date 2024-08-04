@@ -11,11 +11,16 @@ import { RemoveIcon } from "../icons/RemoveIcon";
 import { AddModal, EditModal } from "../Modals/Modal";
 import Link from '@mui/material/Link';
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-import { imageRecognition } from "./OpenAI/actions";
+import { imageRecognition } from "./ServerActions/openai";
 import { SearchBar } from "../components/searchStyles";
 import { HomeButton } from "../components/buttons";
 import { useMediaQuery } from '@mui/material';
 import { CameraButton } from "../components/buttons";
+import { MobileCamera } from "../components/MobileCamera";
+import {Camera} from "react-camera-pro";
+import { CldImage } from 'next-cloudinary';
+
+
 const s3Client = new S3Client({
   region: 'us-east-1',
   credentials: {
@@ -33,7 +38,10 @@ export default function Home() {
   const [quantity,setQuantity] = useState(0)
   const [searchParam,setSearchParam] = useState('')
   const [imageUrl,setImageUrl] = useState('')
-
+  const [mobileCameraOn,setMobileCameraOn] = useState(false)
+  const [reactCameraProImage,setReactCameraProImage] = useState('')
+  const camera = useRef(null);
+  
 
   const filteredPantry = pantry.filter(({item})=>
     item.toLowerCase().startsWith(searchParam.toLowerCase())
@@ -118,7 +126,8 @@ export default function Home() {
         const fileUrl = `https://${bucketName}.s3.amazonaws.com/${fileKey}`;
         console.log(fileUrl)
         setImageUrl(fileUrl)
-        const response = await imageRecognition(fileUrl)
+        
+       const response = await imageRecognition(fileUrl)
         const arr = response.split('.')
         const name = arr[0]
         const quantity_string = arr[1]
@@ -142,8 +151,25 @@ export default function Home() {
     //this ref is attached to the camera file input. Once the camera icon clicked, the input ref clicks on the input field.
     const fileInputRef = useRef(null)
 
+    //activate whenever cameraIcon clicked
     const handleCameraClick = ()=>{
-      fileInputRef.current.click()
+      //on desktop, simply click the fileinput ref. 
+      //on mobile, check if camera on,  if camera off this means to turn camera on if so then this click means to snap the picture,
+      console.log('inside handle camera')
+      
+        fileInputRef.current.click()
+      
+      //if camera off then turn it on (on first click)
+      // else if(!mobileCameraOn){
+      //   setMobileCameraOn(true)
+      // }
+      // //if camera on this means picture is being taken (on 2nd click)
+      // else{
+      //   setReactCameraProImage(camera.current.takePhoto())
+      //   setMobileCameraOn(false)
+      // }
+      
+      // <MobileCamera setImageUrl={setImageUrl}/>
     }
 
 
@@ -155,6 +181,10 @@ export default function Home() {
     getPantry()
     
   },[])
+
+  useEffect(()=>{
+    console.log('image url:',imageUrl)
+  },[imageUrl])
 
   
   // console.log(pantry)
@@ -195,6 +225,8 @@ export default function Home() {
           </Box>
           {isSmall &&
           <CameraButton handleCameraClick={handleCameraClick}/>
+          
+
           }
            <Box
           sx={{
@@ -217,13 +249,17 @@ export default function Home() {
             !isSmall &&
             <CameraButton handleCameraClick={handleCameraClick}/> 
           }
+          {/* {
+            mobileCameraOn &&
+            <MobileCamera/>
+          } */}
               
           
-          
+          {/**on desktop the camerbutton ref clicks this whereas on mobile it uses react camera pro */}
           <input
             type ='file'
             ref={fileInputRef}
-            accept="image/*"
+            accept="image/png, image/jpeg, image/gif, image/webp"
             capture='environment'
             onChange={uploadFile}
             style={{

@@ -6,6 +6,7 @@ const openai = new OpenAI({
   });
 
 export async function imageRecognition(url) {
+  console.log('inside image recognition')
   const response = await openai.chat.completions.create({
     model: "gpt-4o-mini",
     messages: [
@@ -23,5 +24,9 @@ export async function imageRecognition(url) {
       },
     ],
   });
+  // console.log(response)
+  // console.log(response.choices)
+  console.log(response.choices[0])
+
   return response.choices[0]['message']['content']
 }
