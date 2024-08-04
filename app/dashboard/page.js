@@ -19,15 +19,13 @@ import { CameraButton } from "../components/buttons";
 import { MobileCamera } from "../components/MobileCamera";
 import {Camera} from "react-camera-pro";
 import { CldImage } from 'next-cloudinary';
+import { ByteUpload } from "./ServerActions/ByteScale";
+import * as Bytescale from "@bytescale/sdk";
 
-
-const s3Client = new S3Client({
-  region: 'us-east-1',
-  credentials: {
-    accessKeyId: process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.NEXT_PUBLIC_AWS_SECRET_KEY
-  }
+const uploadManager = new Bytescale.UploadManager({
+  apiKey: process.env.NEXT_PUBLIC_BYTESCALE_API_KEY // This is your API key.
 });
+
 
 
 
@@ -106,28 +104,19 @@ export default function Home() {
     }
     }
  
-    const uploadFile = async (event) => {
-      const file = event.target.files[0]
-      console.log('file:',file)
-      const bucketName = "leandro-pantry-images";
-      const fileKey = file.name 
-      //url = https://leandro-pantry-images.s3.amazonaws.com/fileName/.jpeg
-      const params = {
-        Bucket: bucketName,
-        Key: fileKey,
-        Body: file,
-        ContentType: file.type
-      }
-      const command = new PutObjectCommand(params);
+    
 
+    const uploadToByteScale = async (event)=>{
+          const file = event.target.files[0];
       try {
-        await s3Client.send(command);
-       
-        const fileUrl = `https://${bucketName}.s3.amazonaws.com/${fileKey}`;
-        console.log(fileUrl)
-        setImageUrl(fileUrl)
+        const { fileUrl, filePath } = await uploadManager.upload({ data: file });
         
-       const response = await imageRecognition(fileUrl)
+        console.log(fileUrl)
+        console.log(filePath)
+
+        const compressedImageURL = fileUrl.replace('raw','image')
+        console.log(compressedImageURL)
+        const response = await imageRecognition(compressedImageURL)
         const arr = response.split('.')
         const name = arr[0]
         const quantity_string = arr[1]
@@ -141,35 +130,20 @@ export default function Home() {
         
         await addItem(name,open_ai_quantity)
 
-        console.log(response)
+        
       } catch (error) {
-        console.error(error);
-      }
-
-      
-    }
+       
+  }
+    };
+    
     //this ref is attached to the camera file input. Once the camera icon clicked, the input ref clicks on the input field.
     const fileInputRef = useRef(null)
 
     //activate whenever cameraIcon clicked
     const handleCameraClick = ()=>{
-      //on desktop, simply click the fileinput ref. 
-      //on mobile, check if camera on,  if camera off this means to turn camera on if so then this click means to snap the picture,
-      console.log('inside handle camera')
       
         fileInputRef.current.click()
-      
-      //if camera off then turn it on (on first click)
-      // else if(!mobileCameraOn){
-      //   setMobileCameraOn(true)
-      // }
-      // //if camera on this means picture is being taken (on 2nd click)
-      // else{
-      //   setReactCameraProImage(camera.current.takePhoto())
-      //   setMobileCameraOn(false)
-      // }
-      
-      // <MobileCamera setImageUrl={setImageUrl}/>
+
     }
 
 
@@ -182,9 +156,6 @@ export default function Home() {
     
   },[])
 
-  useEffect(()=>{
-    console.log('image url:',imageUrl)
-  },[imageUrl])
 
   
   // console.log(pantry)
@@ -261,7 +232,7 @@ export default function Home() {
             ref={fileInputRef}
             accept="image/png, image/jpeg, image/gif, image/webp"
             capture='environment'
-            onChange={uploadFile}
+            onChange={uploadToByteScale}
             style={{
               display:'none'
             }}
