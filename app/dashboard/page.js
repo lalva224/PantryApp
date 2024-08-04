@@ -22,9 +22,9 @@ import { CldImage } from 'next-cloudinary';
 
 import * as Bytescale from "@bytescale/sdk";
 
-const uploadManager = new Bytescale.UploadManager({
-  apiKey: process.env.NEXT_PUBLIC_BYTESCALE_API_KEY // This is your API key.
-});
+// const uploadManager = new Bytescale.UploadManager({
+//   apiKey: process.env.NEXT_PUBLIC_BYTESCALE_API_KEY // This is your API key.
+// });
 
 
 
